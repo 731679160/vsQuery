@@ -15,7 +15,7 @@ import static util.Utils.getFileSize;
 
 //CA: maxX:1244070maxY:420009minX:1144660minY:326230
 public class Main {
-    public static final int B = 12;//空间数据bit数
+    public static final int B = 12;
 
     public static final int K = 8;
     public static final double C = 10 * K;
