@@ -35,12 +35,10 @@ public class DO {
 
         this.state = state;
 
-        //获取空间数据
         List<SpatialData> data = readSpatialData(path);
 
         getSpatialRange(data);
 
-        //建树
         root = buildTree(data);
 
         assert root != null;
@@ -113,13 +111,11 @@ public class DO {
 
         long s = System.nanoTime();
 
-        //获取四个点相应的前缀
         List<String> zeroPrefix_x = Utils.getZeroPrefix(p1.x - 1);
         List<String> zeroPrefix_y = Utils.getZeroPrefix(p1.y - 1);
         List<String> onePrefix_x = Utils.getOnePrefix(p2.x);
         List<String> onePrefix_y = Utils.getOnePrefix(p2.y);
 
-        //为前缀进行标记
         addTagForPrefix(zeroPrefix_x, "d1:1");
         addTagForPrefix(zeroPrefix_y, "d2:1");
         addTagForPrefix(onePrefix_x, "d1:0");
@@ -153,23 +149,19 @@ public class DO {
 
     private SATreeNode buildTree(List<SpatialData> data) {
         SATreeNode tree = new SATreeNode();
-        if (data.size() == 1) {//叶节点
+        if (data.size() == 1) {
             tree.buildBf(data.get(0), data.get(0), data.get(0).id, state);
             return tree;
         }
 
-        //获取左右子数据集
         List<List<SpatialData>> subData = splitSpatialData(data);
         if (subData == null) return null;
 
-        //递归构建左右树
         tree.left = buildTree(subData.get(0));
         tree.right = buildTree(subData.get(1));
 
-        //构建布隆过滤器
         tree.buildBf(subData.get(2).get(0), subData.get(2).get(1), state);
 
-        //计算左右孩子哈希值
         if (tree.left != null) {
             tree.leftNodeHash = SHA.HASHDataToString(tree.left.bfHash + tree.left.leftNodeHash + tree.left.rightNodeHash);
         }
@@ -195,7 +187,6 @@ public class DO {
                 int x = Integer.parseInt(s[1]);
                 int y = Integer.parseInt(s[2]);
 
-                //防止x，y为0
                 data.add(new SpatialData(x + 1, y + 1, id));
             }
             scr.close();
